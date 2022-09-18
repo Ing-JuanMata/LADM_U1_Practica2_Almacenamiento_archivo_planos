@@ -33,6 +33,7 @@ class GalleryFragment : Fragment() {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        //region Listener para realizar el pedido
         binding.pedir.setOnClickListener {
             if (binding.titulo.text.isNotEmpty()) hacerPedido()
             else {
@@ -42,18 +43,24 @@ class GalleryFragment : Fragment() {
                 ).show()
             }
         }
+        //endregion
+
         return root
     }
 
+    //region Comprobar si hay algo seleccionado
     private fun noHaySeleccion(hamburguesas: Int, tacos: Int, quesadillas: Int): Boolean {
         return (hamburguesas == 0 || !binding.hamburguesa.isChecked) && (tacos == 0 || !binding
             .taco
             .isChecked) &&
                 (quesadillas == 0 || !binding.quesadilla.isChecked)
     }
+    //endregion
 
+    //region Realización del pedido
     private fun hacerPedido() {
         var mensaje: String = ""
+        //region Revisión de datos en la vista
         val hamburguesas: Int = if (binding.cantidadHamburguesa.text.isBlank()) 0 else binding
             .cantidadHamburguesa.text.toString().toInt()
         val tacos: Int = if (binding.cantidadTaco.text.isBlank()) 0 else binding
@@ -70,7 +77,10 @@ class GalleryFragment : Fragment() {
         if (quesadillas > 0 && binding.quesadilla.isChecked) {
             mensaje += "${quesadillas}x quesadillas,"
         }
+        //endregion
+        //Eliminación de la coma extra el final
         mensaje = mensaje.substring(0, mensaje.length - 1)
+
         if (noHaySeleccion(hamburguesas, tacos, quesadillas)) {
             Toast.makeText(
                 this.requireContext(), "Favor de seleccionar por lo menos una " +
@@ -90,7 +100,9 @@ class GalleryFragment : Fragment() {
             }.show()
         }
     }
+    //endregion
 
+    //region Guardar pedido realizado
     private fun guardarPedido(pedido: String) {
         try {
             var archivo =
@@ -104,7 +116,9 @@ class GalleryFragment : Fragment() {
         }
         Toast.makeText(this.requireContext(), "Pedido guardado", Toast.LENGTH_LONG).show()
     }
+    //endregion
 
+    //region Limpieza de la vista
     private fun limpiarCampos() {
         binding.titulo.setText("")
         binding.cantidadHamburguesa.setText("")
@@ -113,9 +127,8 @@ class GalleryFragment : Fragment() {
         binding.hamburguesa.isChecked = false
         binding.taco.isChecked = false
         binding.quesadilla.isChecked = false
-
-
     }
+    //endregion
 
     override fun onDestroyView() {
         super.onDestroyView()
